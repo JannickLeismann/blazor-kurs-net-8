@@ -1,0 +1,81 @@
+﻿<h3>Orders</h3>
+
+@page "/orders"
+
+@rendermode InteractiveServer
+
+@inject SolarTech.Data.SolarTechDbContext DbContext
+@inject NavigationManager NavigationManager
+
+<button class="btn btn-primary" @onclick="AddNewOrder">Add Order</button>
+
+@if (orders == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>NetAmount</th>
+                <th>GrossAmount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in orders)
+            {
+                <tr>                    
+                    <td><a href="/order-details/@order.Id">@order.Id</a></td>
+                    <td>@order.Date.ToShortDateString()</td>
+                    <td>@order.Customer.Name</td>
+                    <td>@order.NetAmount</td>
+                    <td>@order.GrossAmount</td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary" @onclick="() => EditOrder(order.Id)">Edit</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteOrder(order.Id)">Delete</button>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<Order> orders;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        orders = DbContext.Orders.Include(order => order.Customer).ToList();
+    }
+
+    private void AddNewOrder()
+    {
+        NavigationManager.NavigateTo("/add-order");
+    }
+
+    private void EditOrder(int id)
+    {
+        NavigationManager.NavigateTo($"/edit-order/{id}");
+    }
+
+    private void DeleteOrder(int id)
+    {
+        var order = DbContext.Orders.Find(id);
+
+        if (order != null)
+        {
+            DbContext.Orders.Remove(order);
+            DbContext.SaveChanges();
+            orders.Remove(order);
+        }
+    }
+}

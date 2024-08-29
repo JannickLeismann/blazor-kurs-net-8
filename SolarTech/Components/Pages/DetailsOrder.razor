@@ -1,0 +1,56 @@
+﻿@page "/order-details/{id:int}"
+
+@rendermode InteractiveServer
+
+@inject SolarTech.Data.SolarTechDbContext DbContext
+@inject NavigationManager NavigationManager
+
+
+<h3>Order Details</h3>
+
+@if(order == null)
+{
+    <p>Loading...</p>
+} else
+{
+    <div class="card">
+        <div class="card-header">
+            Order Nr. @order.Id - @order.Customer.Name
+        </div>
+        <div class="card-body">
+            <p><strong>Date:</strong> @order.Date.ToShortDateString()</p>
+            <p><strong>Description:</strong> @order.Description</p>
+            <p><strong>Net:</strong> @order.NetAmount€</p>
+            <p><strong>Gross:</strong> @order.GrossAmount€</p>
+            <hr />
+            <p><strong>Customer:</strong> @order.Customer.Name</p>
+            <p><strong>E-Mail:</strong> @order.Customer.Email</p>
+            <p><strong>Address:</strong> @order.Customer.Address</p>
+        </div>
+        <div class="card-footer">
+            <button @onclick="GoBack" class="btn btn-secondary">Back</button>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public int id { get; set; }
+
+    private Order order;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        order = DbContext.Orders
+        .Include(order => order.Customer)
+        .SingleOrDefault(order => order.Id == id);
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/orders");
+    }
+}

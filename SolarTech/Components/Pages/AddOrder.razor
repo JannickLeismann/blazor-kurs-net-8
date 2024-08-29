@@ -1,0 +1,69 @@
+﻿<h3>AddOrder</h3>
+
+@rendermode InteractiveServer
+@page "/add-order"
+
+@inject SolarTech.Data.SolarTechDbContext DbContext
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@newOrder" OnSubmit="HandleSubmit">
+
+    <div class="form-group">
+        <label>Date</label>
+        <InputDate class="form-control" @bind-Value="newOrder.Date" />
+    </div>
+
+        <div class="form-group">
+        <label>Description</label>
+        <InputText class="form-control" @bind-Value="newOrder.Description" />
+    </div>
+
+    <div class="form-group">
+        <label>Net</label>
+        <InputNumber class="form-control" @bind-Value="newOrder.NetAmount" />
+    </div>
+
+    <div class="form-group">
+        <label>Customer</label>
+        <InputSelect class="form-control" @bind-Value="newOrder.CustomerId">
+
+            @foreach(var customer in customers)
+            {
+                <option value="@customer.Id">@customer.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Create</button>
+        <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
+    </div>
+
+</EditForm>
+
+
+@code {
+    private Order newOrder = new Order() { Date = DateTime.Now };
+    private List<Customer> customers;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        customers = DbContext.Customers.ToList();
+    }
+
+    private void HandleSubmit()
+    {
+        DbContext.Orders.Add(newOrder);
+        DbContext.SaveChanges();
+        NavigationManager.NavigateTo("/orders");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/orders");
+    }
+
+}

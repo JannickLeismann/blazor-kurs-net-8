@@ -1,0 +1,74 @@
+﻿<h3>Edit Order</h3>
+
+@rendermode InteractiveServer
+@page "/edit-order/{id:int}"
+
+@inject SolarTech.Data.SolarTechDbContext DbContext
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@order" OnSubmit="HandleSubmit">
+
+    <div class="form-group">
+        <label>Date</label>
+        <InputDate class="form-control" @bind-Value="order.Date" />
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <InputText class="form-control" @bind-Value="order.Description" />
+    </div>
+
+    <div class="form-group">
+        <label>Net</label>
+        <InputNumber class="form-control" @bind-Value="order.NetAmount" />
+    </div>
+
+    <div class="form-group">
+        <label>Customer</label>
+        <InputSelect class="form-control" @bind-Value="order.CustomerId">
+
+            @foreach (var customer in customers)
+            {
+                <option value="@customer.Id">@customer.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Update</button>
+        <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
+    </div>
+
+</EditForm>
+
+
+@code {
+
+    [Parameter]
+    public int id { get; set; }
+
+    private Order order;
+    private List<Customer> customers;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        customers = DbContext.Customers.ToList();
+        order = DbContext.Orders.Find(id);
+    }
+
+    private void HandleSubmit()
+    {
+        DbContext.Orders.Update(order);
+        DbContext.SaveChanges();
+        NavigationManager.NavigateTo("/orders");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/orders");
+    }
+
+}

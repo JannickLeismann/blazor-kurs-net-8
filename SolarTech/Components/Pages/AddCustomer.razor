@@ -1,0 +1,50 @@
+﻿<h3>AddCustomer</h3>
+
+@rendermode InteractiveServer
+@page "/add-customer"
+
+@inject SolarTech.Data.SolarTechDbContext DbContext
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@newCustomer" OnSubmit="HandleSubmit">
+
+    <div class="form-group">
+        <label>Name</label>
+        <InputText class="form-control" @bind-Value="newCustomer.Name" />
+    </div>
+
+        <div class="form-group">
+        <label>Email</label>
+        <InputText class="form-control" @bind-Value="newCustomer.Email" />
+    </div>
+
+    <div class="form-group">
+        <label>Address</label>
+        <InputText class="form-control" @bind-Value="newCustomer.Address" />
+    </div>
+
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Create</button>
+        <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
+    </div>
+
+</EditForm>
+
+
+@code {
+    private Customer newCustomer = new Customer();
+
+    private void HandleSubmit()
+    {
+        DbContext.Customers.Add(newCustomer);
+        DbContext.SaveChanges();
+        NavigationManager.NavigateTo("/customers");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/customers");
+    }
+
+}
