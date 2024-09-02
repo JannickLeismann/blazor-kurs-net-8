@@ -5,8 +5,7 @@
 @inject SolarTech.Data.SolarTechDbContext DbContext
 @inject NavigationManager NavigationManager
 
-
-<h3>Order Details</h3>
+<h3 class="mb-4">Order Details</h3>
 
 @if(order == null)
 {
@@ -16,6 +15,14 @@
     <div class="card">
         <div class="card-header">
             Order Nr. @order.Id - @order.Customer.Name
+
+            @if (!string.IsNullOrEmpty(order.ImagePath))
+            {
+                <div class="my-2">
+                    <img src="@order.ImagePath" style="width:200px;" class="rounded" />
+                </div>
+            }
+
         </div>
         <div class="card-body">
             <p><strong>Date:</strong> @order.Date.ToShortDateString()</p>

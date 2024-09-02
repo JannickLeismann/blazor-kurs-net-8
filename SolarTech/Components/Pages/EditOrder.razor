@@ -1,10 +1,12 @@
-﻿<h3>Edit Order</h3>
+﻿@using SolarTech.Helpers;
 
 @rendermode InteractiveServer
 @page "/edit-order/{id:int}"
 
 @inject SolarTech.Data.SolarTechDbContext DbContext
 @inject NavigationManager NavigationManager
+
+<h3>Edit Order</h3>
 
 <EditForm Model="@order" OnSubmit="HandleSubmit">
 
@@ -21,6 +23,11 @@
     <div class="form-group">
         <label>Net</label>
         <InputNumber class="form-control" @bind-Value="order.NetAmount" />
+    </div>
+
+    <div class="form-group">
+        <label>Image</label>
+        <InputFile OnChange="HandleImageUpload" class="form-control" />
     </div>
 
     <div class="form-group">
@@ -51,6 +58,9 @@
     private Order order;
     private List<Customer> customers;
 
+    private IBrowserFile selectedImage;
+
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -59,10 +69,23 @@
         order = DbContext.Orders.Find(id);
     }
 
-    private void HandleSubmit()
+    private void HandleImageUpload(InputFileChangeEventArgs e)
     {
+        selectedImage = e.File;
+    }
+
+    private async Task HandleSubmit()
+    {
+
+        if (selectedImage != null)
+        {
+            OrderFileUploadHelper uploaderHelper = new OrderFileUploadHelper();
+            var filePath = await uploaderHelper.UploadOrderImage(selectedImage);
+            order.ImagePath = filePath;
+        }
+
         DbContext.Orders.Update(order);
-        DbContext.SaveChanges();
+        await DbContext.SaveChangesAsync();
         NavigationManager.NavigateTo("/orders");
     }
 
