@@ -1,5 +1,7 @@
 ﻿@using SolarTech.Helpers;
 
+@attribute [Authorize]
+
 @rendermode InteractiveServer
 @page "/add-order"
 
@@ -44,7 +46,7 @@
 
     <div class="mt-4">
         <button type="submit" class="btn btn-primary">Create</button>
-        <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
+        <button type="button" @onclick="Cancel" class="btn btn-secondary">Cancel</button>
     </div>
 
 </EditForm>
@@ -86,7 +88,7 @@
 
     private void Cancel()
     {
-        NavigationManager.NavigateTo("/orders");
+        NavigationManager.NavigateTo("/orders", forceLoad:true);
     }
 
 }

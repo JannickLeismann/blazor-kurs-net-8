@@ -1,5 +1,7 @@
 ﻿<h3>AddCustomer</h3>
 
+@attribute [Authorize]
+
 @rendermode InteractiveServer
 @page "/add-customer"
 
@@ -26,7 +28,7 @@
 
     <div class="mt-4">
         <button type="submit" class="btn btn-primary">Create</button>
-        <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
+        <button type="button" @onclick="Cancel" class="btn btn-secondary">Cancel</button>
     </div>
 
 </EditForm>
@@ -44,7 +46,7 @@
 
     private void Cancel()
     {
-        NavigationManager.NavigateTo("/customers");
+        NavigationManager.NavigateTo("/customers", forceLoad: true);
     }
 
 }

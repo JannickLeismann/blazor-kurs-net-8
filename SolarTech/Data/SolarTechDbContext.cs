@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SolarTech.Models;
 
 namespace SolarTech.Data
 {
-    public class SolarTechDbContext : DbContext
+    public class SolarTechDbContext : IdentityDbContext
     {
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Order> Orders { get; set; }

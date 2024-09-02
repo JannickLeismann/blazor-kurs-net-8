@@ -1,5 +1,7 @@
 ﻿@page "/order-details/{id:int}"
 
+@attribute [Authorize]
+
 @rendermode InteractiveServer
 
 @inject SolarTech.Data.SolarTechDbContext DbContext

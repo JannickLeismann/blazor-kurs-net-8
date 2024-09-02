@@ -1,5 +1,6 @@
 ﻿@page "/edit-customer/{id:int}"
 
+@attribute [Authorize]
 @rendermode InteractiveServer
 
 @inject SolarTech.Data.SolarTechDbContext DbContext
@@ -27,7 +28,7 @@
 
     <div class="mt-4">
         <button type="submit" class="btn btn-primary">Update</button>
-        <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
+        <button type="button" @onclick="Cancel" class="btn btn-secondary">Cancel</button>
     </div>
 
 </EditForm>
@@ -55,6 +56,6 @@
 
     private void Cancel()
     {
-        NavigationManager.NavigateTo("/customers");
+        NavigationManager.NavigateTo("/customers", forceLoad: true);
     }
 }
